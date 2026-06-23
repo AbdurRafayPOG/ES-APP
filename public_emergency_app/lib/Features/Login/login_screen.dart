@@ -62,7 +62,6 @@ class LoginScreen extends StatelessWidget  {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
-              // (,
               LoginForm(),
               FooterWidget(Texts: "Don't have an account ",Title: "Sign Up"),
             ],

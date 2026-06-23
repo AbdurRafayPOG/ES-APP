@@ -1,11 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'Common Widgets/Onboarding.dart';
-import 'Features/User/Screens/SignUp/verify_email_page.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
+import 'package:public_emergency_app/Features/User/Controllers/call_controller.dart';
+import 'package:public_emergency_app/Services/emergency_assignment_service.dart'; // <-- ADD THIS IMPORT
+
+import 'Features/Splash/splash_screen.dart';
 import 'firebase_options.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,7 +19,14 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // ✅ Hide system navigation + status bar for immersive fullscreen mode
+  // Set navigator key
+  ZegoUIKitPrebuiltCallInvitationService().setNavigatorKey(navigatorKey);
+
+  // IMPORTANT: Call useSystemCallingUI before runApp
+  await ZegoUIKitPrebuiltCallInvitationService().useSystemCallingUI(
+    [ZegoUIKitSignalingPlugin()],
+  );
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   runApp(const MyApp());
@@ -25,15 +37,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var user = FirebaseAuth.instance.currentUser;
-
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Public Emergency App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: user == null ? const OnBoardingScreen() : const VerifyEmailPage(),
+      navigatorKey: navigatorKey,
+      initialBinding: AppBinding(),
+      home: const SplashScreen(),
     );
+  }
+}
+
+class AppBinding extends Bindings {
+  @override
+  void dependencies() {
+    // Register CallController
+    Get.put<CallController>(CallController(), permanent: true);
+    
+    // Register EmergencyAssignmentService
+    Get.put<EmergencyAssignmentService>(EmergencyAssignmentService(), permanent: true);
   }
 }

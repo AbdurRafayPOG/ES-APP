@@ -3,14 +3,9 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../../Emergency Contacts/emergency_contacts_controller.dart';
 
 class MessageController extends GetxController {
   static MessageController get instance => Get.find();
-
-  final EmergencyContactsController emergencyContactsController = Get.put(
-    EmergencyContactsController(),
-  );
 
   // Reactive state variables
   final RxString currentAddress = RxString('');
@@ -119,12 +114,5 @@ class MessageController extends GetxController {
       debugPrint('Error getting address: $e');
       currentAddress.value = 'Address unavailable';
     }
-  }
-
-  // Utility method to check if we can access location and contacts
-  Future<bool> canAccessEmergencyData() async {
-    final hasLocationPermission = await handleLocationPermission();
-    final contacts = await emergencyContactsController.loadData();
-    return hasLocationPermission && contacts.isNotEmpty;
   }
 }

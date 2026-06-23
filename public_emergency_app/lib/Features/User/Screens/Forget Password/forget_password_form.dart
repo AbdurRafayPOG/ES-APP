@@ -66,24 +66,23 @@ class _ForgetFormWidgetState extends State<ForgetFormWidget> {
             ),
             const SizedBox(height: 30 - 10),
             TextFormField(
-              validator: (value) {
-                bool _isEmailValid = RegExp(
-                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                    .hasMatch(value!);
-                if (!_isEmailValid) {
-                  return 'Invalid email.';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.email_outlined),
-                labelText: "Email",
-                hintText: "Email",
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-              ),
-              controller: emailController,
-            ),
+  controller: emailController,
+  enableSuggestions: false,
+  autocorrect: false,
+  validator: (value) {
+    // Check if value contains @ symbol
+    if (value == null || !value.contains('@')) {
+      return 'Please enter a valid email address (must contain @)';
+    }
+    return null;
+  },
+  decoration: InputDecoration(
+    prefixIcon: const Icon(Icons.email_outlined),
+    labelText: "Email",
+    hintText: "Email",
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+  ),
+),
             const SizedBox(height: 50),
             SizedBox(
               width: double.infinity,
